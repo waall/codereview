@@ -52,14 +52,12 @@ app.post('/reset-password', async (req, res) => {
     const token = crypto.randomBytes(24).toString('hex');
     tokens.set(token, Date.now() + 10 * 60 * 1000);
 
-    // Intentionally vulnerable: Host controls the generated URL.
     const resetLink =
         `http://${req.headers.host}/reset-password?token=${token}`;
 
     console.log(`[MOCK EMAIL] To: ${email}`);
     console.log(`[MOCK EMAIL] Reset link: ${resetLink}`);
 
-    // Simulate the user clicking the reset link.
     try {
         const response = await fetch(resetLink, {
             signal: AbortSignal.timeout(5000),
