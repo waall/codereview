@@ -1,12 +1,17 @@
-FROM node:22-alpine
+FROM python:3.12-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install --omit=dev
+COPY Pipfile Pipfile.lock /app/
 
-COPY main.js .
+RUN pip install pipenv
 
-EXPOSE 3000
+# Activate the virtual environment and install dependencies
+RUN pipenv install --deploy --system
 
-CMD ["npm", "start"]
+# Copy the rest of the application code to the working directory
+COPY . /app/
+
+EXPOSE 5000
+
+CMD ["python", "main.py"]
